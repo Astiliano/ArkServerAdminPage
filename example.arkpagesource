@@ -1,0 +1,17 @@
+#!/bin/bash
+
+#The root directory of your ark server (normally the directory the folder "serverfiles" is in.)
+dir=~/S1
+
+#Where is your web directory, needed to create the Process.html page
+web=~/public_html
+
+#either alias or full file location for rcon
+srcon="rcon -Pmyfakepw -a192.168.1.27 -p32330"
+
+
+#World Save is located at [Your Ark Server Directory]/serverfiles/ShooterGame/Saved/SavedArks/
+#And is named [Map].ark  | TheIsland.ark | TheCenter.ark | Valhalla.ark | etc
+worldsave="TheCenter.ark"
+
+banner="<a  href="http://arkservers.net/server/74.82.225.186:27015" target="_blank"> <img src="http://arkservers.net/banner/74.82.225.186:27015/banner.png" width="100%" alt="BROKE"></a>"
