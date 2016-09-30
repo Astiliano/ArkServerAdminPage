@@ -1,7 +1,7 @@
 #!/bin/bash 
 
 #get custom stuff
-source ~/dir.sh
+source ~/arkpagesource
 
 html=$web/status.html
 html2=$web/modlist.html
@@ -113,7 +113,7 @@ modpulldate=$(date +"%b %d %r PST")
     down="<img src="/images/down.png"  width="12" height="12" align="justify">"
     warn="<img src="/images/warning.png"  width="12" height="12" align="justify">"
 
-    source ~/dir.sh
+    source ~/arkpagesource
     mod=$1
     moddir="$dir/serverfiles/Engine/Binaries/ThirdParty/SteamCMD/Linux/steamapps/workshop/content/346110"
     steamurl="https://steamcommunity.com/sharedfiles/filedetails/?id="
