@@ -15,21 +15,6 @@ server=$(echo "$newlist" | awk '{print $2}' | sed 's/.*=//g')
 if [ "$key" = $(cat $dir/key) ]
 then
 
-#if [ "$server" = "Start" ]
-#then
-#       echo "<h2>Server Started</h2>"
-#       echo "Please wait up to 5min for server to come up<br>"
-#       (echo "<pre> $($dir/arkserver start) </pre>")
-#elif [ "$server" = "Stop" ]
-#then 
-#       echo "<h2>Server Stopped</h2>"
-#       echo "<pre> $($dir/arkserver stop) </pre>"
-#elif [ "$server" = "Save" ]
-#then
-#      echo "<h2>Server World Saved</h2>"
-#      echo "<pre> $($srcon saveworld) </pre>"
-#fi
-
 case $server in
 
 Start )
