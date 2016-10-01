@@ -4,7 +4,7 @@ echo
 read input
 
 #get custom stuff
-source ~/dir.sh
+source ~/arkpagesource
 
 newlist=$(echo $input | sed 's/&/ /g')
 key=$(echo "$newlist" | awk '{print $1}' | sed 's/.*=//g')
