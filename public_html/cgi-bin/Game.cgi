@@ -1,7 +1,7 @@
 #!/bin/bash
 echo "Content-Type: text/html"
 echo
-source ~/dir.sh
+source ~/arkpagesource
 file="$dir/serverfiles/ShooterGame/Saved/Config/LinuxServer/Game.ini"
 echo "<pre>"
 echo "$(sed 's/ServerAdminPassword=.*/ServerAdminPassword=N0J0d@$/g' "$file")"
