@@ -205,7 +205,7 @@ echo '
 <center><FONT FACE="garamond"><b>Pull:</b> '$modpulldate'</FONT></center>
 <table>
   <tr>
-    <td><div class="tooltip">Server Build:&nbsp;<span class="tooltiptext">DevBuild:'$devbuild'<br>OurBuild:'$ourbuild'</span></div></td>
+    <td><div class="tooltip"><a href="https://steamdb.info/app/376030/depots/?branch=public" target="_blank">Server Build:&nbsp;<span class="tooltiptext">DevBuild:'$devbuild'<br>OurBuild:'$ourbuild'</span></a></div></td>
     <td>'$build'</td>
     <td>&nbsp;&nbsp;
     <td><b>Server Mods:&nbsp;</b></td>
