@@ -176,15 +176,15 @@ echo '
 <div style="border-style: groove;border-width: 5px; width: 97%">
 '$banner'
 <center><FONT FACE="garamond"><b>Pull:</b> '$(date +"%b %d %r PST")'</FONT></center>
-<table cellpadding="10">
+<table>
   <tr>
     <td><b>Started:</b></td>
     <td><mark><b>'$started'</b></mark></td>
+  </tr>
+  <tr>
     <td><b>Stopped:</b></td>
     <td><mark><b>'$stopped'</b></mark></td>
   </tr>
-</table>
-<table>
   <tr>
     <td><b>Server Process:</b></td>
     <td>'$p'</td>
