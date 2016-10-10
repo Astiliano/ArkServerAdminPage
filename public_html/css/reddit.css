@@ -83,13 +83,11 @@
 }
 
 .right {
-    /*float: right;*/
     width: 33%;
     position: relative;
 }
-.left {
-   /* float: left;*/
-    width: 33%;
+.half {
+    height: 50%;
     position: relative;
 }
 .tooltip {
