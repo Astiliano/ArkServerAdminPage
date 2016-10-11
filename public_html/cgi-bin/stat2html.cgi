@@ -5,6 +5,9 @@ source ~/arkpagesource
 
 html=$web/status.html
 html2=$web/modlist.html
+html3=$web/playerlist.html
+html4=$web/chat.html
+
 #My Status PNG's brings all the boys to the yard
 up="<img src="/images/up.png"  width="12" height="12" align="justify">"
 down="<img src="/images/down.png"  width="12" height="12" align="justify">"
@@ -12,7 +15,8 @@ warn="<img src="/images/warning.png"  width="12" height="12" align="justify">"
 
 maxcount=15
 count=$maxcount
-sleep=2
+sleep=4
+round=1
 
 while :
 do
@@ -54,24 +58,77 @@ p="$down <font face="verdana" color="red"> Stopped </font>"
 fi
 
 
-#=========== RCON STATUS ===========
-rconpull=$($srcon 2>&1)
+#=========== RCON STATUS + More ===========
 
-if [ "$(echo "$rconpull" | grep "Connection refused")" != "" ]
-then
-r="$down <font face="verdana" color="red"> Connection Refused </font>"
-elif [ "$(echo "$rconpull" | grep "Couldn't Authenticate")" != "" ]
-then
-r="$warn <font face="verdana" color="Orange"> Couldn't Authenticate </font>"
-elif [ "$(echo "$rconpull" | grep "received")" != "" ]
-then
-r="$up <font face="verdana" color="green"> Server Received </font>"
-elif [ "$(echo "$rconpull" | grep "Password Refused")" != "" ]
-then
-r="$warn <font face="verdana" color="Orange"> Password Refused </font>"
-else
-r="$down <font face="verdana" color="red"> HALP </font>"
-fi
+case $round in
+
+1 )
+    rconpull=$($srcon listplayers 2>&1)
+    if [ "$(echo "$rconpull" | grep "Connection refused")" != "" ]
+    then
+    r="$down <font face="verdana" color="red"> Connection Refused </font>"
+    elif [ "$(echo "$rconpull" | grep "Couldn't Authenticate")" != "" ]
+    then
+    r="$warn <font face="verdana" color="Orange"> Couldn't Authenticate </font>"
+    elif [ "$(echo "$rconpull" | grep "received")" != "" ] || [ "$(echo "$rconpull" | grep "No Players Connected")" != "" ] || [ "$(echo "$rconpull" | head -1)" = "" ] 
+    then
+	if [ "$(echo "$rconpull" | head -1)" = "" ]
+	then
+	plist=$(echo "<table>")
+
+	for player in $(echo "$rconpull" | sed '/^\s*$/d')
+	do
+	pname $(echo "$player" | sed '/^\s*$/d' | cut -c 4- | cut -d',' -f1)
+	pid=$(echo "$player" | sed '/^\s*$/d' | cut -c 4- | cut -d',' -f2 | tr -d ' ')
+	plist+=$(echo "<tr>
+	<td><a href="http://steamcommunity.com/profiles/$pid " target="_blank">View Profile -</a></td>
+	<td>$pname</td>
+	</tr>
+	")
+	done
+	plist+=$(echo "</table>")
+	echo "$plist" > $html3
+	else
+	echo "$rconpull" > $html3
+	fi
+    r="$up <font face="verdana" color="green"> Server Received </font>"
+    elif [ "$(echo "$rconpull" | grep "Password Refused")" != "" ]
+    then
+    r="$warn <font face="verdana" color="Orange"> Password Refused </font>"
+    else
+    r="$down <font face="verdana" color="red"> HALP - $(echo "$rconpull")</font>"
+    fi
+	round=2
+    ;;
+2 )
+    rconpull=$($srcon getchat 2>&1)
+    if [ "$(echo "$rconpull" | grep "Connection refused")" != "" ]
+    then
+    r="$down <font face="verdana" color="red"> Connection Refused </font>"
+    elif [ "$(echo "$rconpull" | grep "Couldn't Authenticate")" != "" ]
+    then
+    r="$warn <font face="verdana" color="Orange"> Couldn't Authenticate </font>"
+    elif [ "$(echo "$rconpull" | grep "received")" != "" ]
+    then
+    r="$up <font face="verdana" color="green"> Server Received </font>"
+    elif [ "$(echo "$rconpull" | grep "Password Refused")" != "" ]
+    then
+    r="$warn <font face="verdana" color="Orange"> Password Refused </font>"
+    elif [ "$(echo "$rconpull" | grep " command not found")" = "" ]
+    then
+	clean=$(echo "$rconpull" | sed '/^\s*$/d' )
+	while read -r chatline
+	do
+        chat+=$(echo -e "\n<b>$(date "+[%m/%d %H:%m]")</b>$chatline<br>")
+	done <<< "$clean"
+	echo "$chat" >> $html4
+    r="$up <font face="verdana" color="green"> Server Received </font>"
+    else
+    r="$down <font face="verdana" color="red"> HALP - $(echo "$rconpull")</font>"
+    fi
+	round=1
+    ;;
+esac
 
 #=========== WORLD SAVE DATE ===========
 wfile=$dir/serverfiles/ShooterGame/Saved/SavedArks/$worldsave
