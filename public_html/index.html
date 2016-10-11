@@ -23,13 +23,20 @@
         });
 
         function startRefresh() {
-            setTimeout(startRefresh,2000);
+            setTimeout(startRefresh,4000);
             $.get('status.html', function(data) {
                 $('#status').html(data);
             });
             $.get('modlist.html', function(data) {
                 $('#modlist').html(data);
             });
+	    $.get('playerlist.html', function(data) {
+                $('#playerlist').html(data);
+            });
+	    $.get('chat.html', function(data) {
+                $('#chat').html(data);
+            });
+
         }
     </script>
 
@@ -115,14 +122,19 @@
 
 
 
-<div class="right"  id="config">
-        <h2>GameUserSettings.ini TEMP</h2>
-        <a href="cgi-bin/GameUserSettings.cgi" target="_blank">Open In New Window</a>
-
-<div style="border-style: groove;border-width: 5px; width: 97%">
-<iframe  src="cgi-bin/GameUserSettings.cgi" frameborder="0" style="display: block; height: 100%; width: 100%"></iframe>
+	<div class="right"  id="config">
+        <h2>Admin News Board</h2>
+	<br>
+        <div style="border-style: groove;border-width: 5px; width: 97%">
+        WIP
+        </div>
+        <h2>Player List</h2>
+	<div id="playerlist" style="border-style: groove;border-width: 5px; width: 97%">
 </div>
-    </div>
+        <h2>Server Chat</h2>
+        <div id="chat" style="border-style: groove;border-width: 5px; width: 97%">
+</div>
+	</div>
 
 
 
