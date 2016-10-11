@@ -78,7 +78,7 @@ case $round in
 
 	for player in $(echo "$rconpull" | sed '/^\s*$/d')
 	do
-	pname $(echo "$player" | sed '/^\s*$/d' | cut -c 4- | cut -d',' -f1)
+	pname=$(echo "$player" | sed '/^\s*$/d' | cut -c 4- | cut -d',' -f1)
 	pid=$(echo "$player" | sed '/^\s*$/d' | cut -c 4- | cut -d',' -f2 | tr -d ' ')
 	plist+=$(echo "<tr>
 	<td><a href="http://steamcommunity.com/profiles/$pid " target="_blank">View Profile -</a></td>
