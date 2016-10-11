@@ -75,8 +75,8 @@ case $round in
 	if [ "$(echo "$rconpull" | head -1)" = "" ]
 	then
 	plist=$(echo "<table>")
-
-	for player in $(echo "$rconpull" | sed '/^\s*$/d')
+	clean=$(echo "$rconpull" | sed '/^\s*$/d' )
+	while read -r player
 	do
 	pname=$(echo "$player" | sed '/^\s*$/d' | cut -c 4- | cut -d',' -f1)
 	pid=$(echo "$player" | sed '/^\s*$/d' | cut -c 4- | cut -d',' -f2 | tr -d ' ')
@@ -85,7 +85,7 @@ case $round in
 	<td>$pname</td>
 	</tr>
 	")
-	done
+	done <<< "$clean"
 	plist+=$(echo "</table>")
 	echo "$plist" > $html3
 	else
