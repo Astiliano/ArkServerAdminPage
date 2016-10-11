@@ -119,7 +119,7 @@ case $round in
 	clean=$(echo "$rconpull" | sed '/^\s*$/d' )
 	while read -r chatline
 	do
-        chat+=$(echo -e "\n<b>$(date "+[%m/%d %H:%m]")</b>$chatline<br>")
+        chat+=$(echo -e "\n<b>$(date "+[%m/%d %H:%M]")</b>$chatline<br>")
 	done <<< "$clean"
 	echo "$chat" >> $html4
     r="$up <font face="verdana" color="green"> Server Received </font>"
