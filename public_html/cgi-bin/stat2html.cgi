@@ -117,6 +117,7 @@ case $round in
     elif [ "$(echo "$rconpull" | grep " command not found")" = "" ]
     then
 	clean=$(echo "$rconpull" | sed '/^\s*$/d' )
+	unset chat
 	while read -r chatline
 	do
         chat+=$(echo -e "\n<b>$(date "+[%m/%d %H:%M]")</b>$chatline<br>")
