@@ -24,8 +24,10 @@
 
         function startRefresh() {
             setTimeout(startRefresh,4000);
-            $.get('status.html', function(data) {
-                $('#status').html(data);
+	    $.get('chat.html', function(data) {
+            $('#chat').html(data);
+		var elem = document.getElementById('chat');
+		elem.scrollTop = elem.scrollHeight
             });
             $.get('modlist.html', function(data) {
                 $('#modlist').html(data);
@@ -33,13 +35,12 @@
 	    $.get('playerlist.html', function(data) {
                 $('#playerlist').html(data);
             });
-	    $.get('chat.html', function(data) {
-                $('#chat').html(data);
+            $.get('status.html', function(data) {
+                $('#status').html(data);
             });
 
         }
     </script>
-
     <script type="text/javascript">
         function toggle_visibility(id) {
             var e = document.getElementById(id);
@@ -132,7 +133,7 @@
 	<div id="playerlist" style="border-style: groove;border-width: 5px; width: 97%">
 </div>
         <h2>Server Chat</h2>
-        <div id="chat" style="border-style: groove;border-width: 5px; width: 97%">
+        <div id="chat" style="border-style: groove;border-width: 5px; width: 97%;overflow-x: hidden; height: 200px;">
 </div>
 	</div>
 
