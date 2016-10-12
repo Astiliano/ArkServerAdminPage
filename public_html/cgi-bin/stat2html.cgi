@@ -120,7 +120,10 @@ case $round in
 	unset chat
 	while read -r chatline
 	do
-        chat+=$(echo -e "\n<b>$(date "+[%m/%d %H:%M]")</b>$chatline<br>")
+		if [ "$(echo "$chatline" | grep "")" != "" ]
+		then
+		chat+=$(echo -e "\n<b>$(date "+[%m/%d %H:%M]")</b>$chatline<br>")
+		fi
 	done <<< "$clean"
 	echo "$chat" >> $html4
     r="$up <font face="verdana" color="green"> Server Received </font>"
