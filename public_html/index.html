@@ -17,6 +17,8 @@
 </script>
 
 
+
+
     <script>
         $(function() {
             startRefresh();
@@ -24,24 +26,59 @@
 
         function startRefresh() {
             setTimeout(startRefresh,4000);
+	    getchat();
+	    getmodlist();
+	    getplayerlist();
+	    getstatus();
+        }
+	
+	function setchatscroll() {
+	    var elem = document.getElementById('chat');
+	    elem.scrollTop = elem.scrollHeight;
+	}
+
+	function getchat() {
+	 var elem = document.getElementById('chat');
+ 	 var elemtop = elem.scrollTop;
+	 var elemheight = elem.scrollHeight - elem.clientHeight
+	  if ( elemtop == elemheight ) {
+	    $.get('chat.html', function(data) {
+	    $('#chat').html(data);
+	    });
+	    setTimeout(setchatscroll,2000)
+	} else {
 	    $.get('chat.html', function(data) {
             $('#chat').html(data);
-		var elem = document.getElementById('chat');
-		elem.scrollTop = elem.scrollHeight
             });
-            $.get('modlist.html', function(data) {
-                $('#modlist').html(data);
-            });
-	    $.get('playerlist.html', function(data) {
-                $('#playerlist').html(data);
-            });
-            $.get('status.html', function(data) {
-                $('#status').html(data);
-            });
+	   }
+	}
 
-        }
+	function getmodlist() {
+	    $.get('modlist.html', function(data) {
+            $('#modlist').html(data);
+            });
+	}
+
+	function getplayerlist() {
+	    $.get('playerlist.html', function(data) {
+            $('#playerlist').html(data);
+            });
+	}
+
+	function getstatus() {
+	    $.get('status.html', function(data) {
+            $('#status').html(data);
+            });
+	}
+
+	function getstatus() {
+	    $.get('status.html', function(data) {
+            $('#status').html(data);
+            });
+	}
     </script>
-    <script type="text/javascript">
+
+    <script>
         function toggle_visibility(id) {
             var e = document.getElementById(id);
             if(e.style.display == 'block')
@@ -133,6 +170,7 @@
 	<div id="playerlist" style="border-style: groove;border-width: 5px; width: 97%">
 </div>
         <h2>Server Chat</h2>
+	<div style="text-align: right;"><a href="javascript:setchatscroll()">Back to bottom</a></div>
         <div id="chat" style="border-style: groove;border-width: 5px; width: 97%;overflow-x: hidden; height: 200px;">
 </div>
 	</div>
