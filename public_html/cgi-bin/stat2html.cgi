@@ -80,9 +80,11 @@ case $round in
 	do
 	pname=$(echo "$player" | sed '/^\s*$/d' | cut -c 4- | cut -d',' -f1)
 	pid=$(echo "$player" | sed '/^\s*$/d' | cut -c 4- | cut -d',' -f2 | tr -d ' ')
+	purl="http://steamcommunity.com/profiles/$pid"
+	pimg=$( curl -s $purl | grep "playerAvatarAutoSizeInner" | grep -o -P '(?<=src=).*(?=><)')
 	plist+=$(echo "<tr>
-	<td><a href="http://steamcommunity.com/profiles/$pid " target="_blank">View Profile -</a></td>
-	<td>$pname</td>
+	<td><img src=$pimg width="25%"></td>
+	<td><a href="http://steamcommunity.com/profiles/$pid" target="_blank">View Profile - $pname</a></td>
 	</tr>
 	")
 	done <<< "$clean"
