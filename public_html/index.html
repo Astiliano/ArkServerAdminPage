@@ -42,12 +42,14 @@
         var elem = document.getElementById('chat');
          var elemtop = elem.scrollTop;
          var elemheight = elem.scrollHeight - elem.clientHeight
-          if ( elemtop == elemheight ) {
+          if ( elemtop >= elemheight ) {
           $('#chat').load('chat.html');
-          setTimeout(setchatscroll,500)
+          setTimeout(setchatscroll,1500);
           } else {
           $('#chat').load('chat.html');
           }
+	// If auto bottom stops working
+	// document.getElementById("board").innerHTML = "top" + elemtop + "height" + elemheight;
         }
 
 	function getmodlist() {
@@ -157,7 +159,7 @@ function setchatscrolltest() {
 	<div class="right"  id="config">
         <h2>Admin News Board</h2>
 	<br>
-        <div style="border-style: groove;border-width: 5px; width: 97%">
+        <div id="board" style="border-style: groove;border-width: 5px; width: 97%">
         WIP
         </div>
         <h2>Player List</h2>
