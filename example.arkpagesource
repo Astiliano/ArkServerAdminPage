@@ -15,3 +15,9 @@ srcon="rcon -Pmyfakepw -a192.168.1.27 -p32330"
 worldsave="TheCenter.ark"
 
 banner="<a  href="http://arkservers.net/server/74.82.225.186:27015" target="_blank"> <img src="http://arkservers.net/banner/74.82.225.186:27015/banner.png" width="100%" alt="BROKE"></a>"
+
+
+#Steam API Key
+#http://steamcommunity.com/dev/apikey
+
+apikey="Axxxxxxxxxxxxxxxxxxxxxx"
