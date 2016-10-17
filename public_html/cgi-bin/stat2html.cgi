@@ -74,6 +74,7 @@ case $round in
     then
 	if [ "$(echo "$rconpull" | head -1)" = "" ]
 	then
+	steamapi="http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=$apikey&steamids="
 	plist=$(echo "<table>")
 	clean=$(echo "$rconpull" | sed '/^\s*$/d' )
 	while read -r player
@@ -81,9 +82,9 @@ case $round in
 	pname=$(echo "$player" | sed '/^\s*$/d' | cut -c 4- | cut -d',' -f1)
 	pid=$(echo "$player" | sed '/^\s*$/d' | cut -c 4- | cut -d',' -f2 | tr -d ' ')
 	purl="http://steamcommunity.com/profiles/$pid"
-	pimg=$( curl -s $purl | grep "playerAvatarAutoSizeInner" | grep -o -P '(?<=src=).*(?=><)')
+	pimg=$( curl -s "$steamapi$pid"  | grep -o -P '(?<=full": ).*(?=,)' )
 	plist+=$(echo "<tr>
-	<td><img src=$pimg width="25%"></td>
+	<td><img src=$pimg width="25%"> </td>
 	<td><a href="http://steamcommunity.com/profiles/$pid" target="_blank">View Profile - $pname</a></td>
 	</tr>
 	")
