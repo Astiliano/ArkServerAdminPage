@@ -64,15 +64,10 @@ case $round in
 
 1 )
     rconpull=$($srcon listplayers 2>&1)
-    if [ "$(echo "$rconpull" | grep "Connection refused")" != "" ]
+
+    if [ "$(echo "$rconpull" | grep "received")" != "" ] || [ "$(echo "$rconpull" | grep "No Players Connected")" != "" ] || [ "$(echo "$rconpull" | grep '.*,' )" != "" ]
     then
-    r="$down <font face="verdana" color="red"> Connection Refused </font>"
-    elif [ "$(echo "$rconpull" | grep "Couldn't Authenticate")" != "" ]
-    then
-    r="$warn <font face="verdana" color="Orange"> Couldn't Authenticate </font>"
-    elif [ "$(echo "$rconpull" | grep "received")" != "" ] || [ "$(echo "$rconpull" | grep "No Players Connected")" != "" ] || [ "$(echo "$rconpull" | head -1)" = "" ] 
-    then
-	if [ "$(echo "$rconpull" | head -1)" = "" ]
+	if [ "$(echo "$rconpull" | grep '.*,' )" != "" ]
 	then
 	plist=$(echo "<table>")
 	clean=$(echo "$rconpull" | sed '/^\s*$/d' )
@@ -94,47 +89,47 @@ case $round in
 	echo "$rconpull" > $html3
 	fi
     r="$up <font face="verdana" color="green"> Server Received </font>"
-    elif [ "$(echo "$rconpull" | grep "Password Refused")" != "" ]
-    then
-    r="$warn <font face="verdana" color="Orange"> Password Refused </font>"
-    else
-    r="$down <font face="verdana" color="red"> HALP - $(echo "$rconpull")</font>"
     fi
-	round=2
+    round=2
     ;;
 2 )
     rconpull=$($srcon getchat 2>&1)
+    if [ "$(echo "$rconpull" | grep "received")" != "" ] || [ "$(echo "$rconpull" | grep '(*):' )" != "" ] || [ "$(echo "$rconpull" | grep "SERVER:" )" != "" ]
+    then
+	if [ "$(echo "$rconpull" | grep '(*):' )" != "" ] || [ "$(echo "$rconpull" | grep "SERVER:" )" != "" ]
+	then
+	clean=$(echo "$rconpull" | sed '/^\s*$/d' )
+	unset chat
+	while read -r chatline
+	do
+	if [ "$(echo "$chatline" | grep "")" != "" ]
+	then
+	chat+=$(echo -e "\n<b>$(date "+[%m/%d %H:%M]")</b>$chatline<br>")
+	fi
+	done <<< "$clean"
+	echo "$chat" >> $html4
+	fi
+    r="$up <font face="verdana" color="green"> Server Received </font>"
+    fi
+    round=1
+    ;;
+esac
+
+
+
     if [ "$(echo "$rconpull" | grep "Connection refused")" != "" ]
     then
     r="$down <font face="verdana" color="red"> Connection Refused </font>"
     elif [ "$(echo "$rconpull" | grep "Couldn't Authenticate")" != "" ]
     then
     r="$warn <font face="verdana" color="Orange"> Couldn't Authenticate </font>"
-    elif [ "$(echo "$rconpull" | grep "received")" != "" ]
-    then
-    r="$up <font face="verdana" color="green"> Server Received </font>"
     elif [ "$(echo "$rconpull" | grep "Password Refused")" != "" ]
     then
     r="$warn <font face="verdana" color="Orange"> Password Refused </font>"
-    elif [ "$(echo "$rconpull" | grep " command not found")" = "" ]
-    then
-	clean=$(echo "$rconpull" | sed '/^\s*$/d' )
-	unset chat
-	while read -r chatline
-	do
-		if [ "$(echo "$chatline" | grep "")" != "" ]
-		then
-		chat+=$(echo -e "\n<b>$(date "+[%m/%d %H:%M]")</b>$chatline<br>")
-		fi
-	done <<< "$clean"
-	echo "$chat" >> $html4
-    r="$up <font face="verdana" color="green"> Server Received </font>"
-    else
-    r="$down <font face="verdana" color="red"> HALP - $(echo "$rconpull")</font>"
     fi
-	round=1
-    ;;
-esac
+
+
+
 
 #=========== WORLD SAVE DATE ===========
 wfile=$dir/serverfiles/ShooterGame/Saved/SavedArks/$worldsave
