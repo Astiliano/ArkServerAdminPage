@@ -18,6 +18,7 @@ count=$maxcount
 sleep=4
 round=1
 
+
 while :
 do
 
@@ -58,6 +59,19 @@ p="$down <font face="verdana" color="red"> Stopped </font>"
 fi
 
 
+
+case $updateinprogress in
+
+1 )
+echo "update case"
+	if [ "$(echo "$p"  | grep "Stopped")" != "" ]
+	then
+	$dir/arkserver start &
+	updateinprogress=2
+	fi
+;;
+esac
+
 #=========== RCON STATUS + More ===========
 
 case $round in
@@ -69,28 +83,66 @@ case $round in
     then
 	if [ "$(echo "$rconpull" | grep '.*,' )" != "" ]
 	then
-	plist=$(echo "<table>")
 	clean=$(echo "$rconpull" | sed '/^\s*$/d' )
+	pnumber=$(echo "$rconpull" | sed '/^\s*$/d' | wc -l)
+	plist=$(echo "<table>")
+
 	while read -r player
-	do
-	pname=$(echo "$player" | sed '/^\s*$/d' | cut -c 4- | cut -d',' -f1)
-	pid=$(echo "$player" | sed '/^\s*$/d' | cut -c 4- | cut -d',' -f2 | tr -d ' ')
-	purl="http://steamcommunity.com/profiles/$pid"
-	pimg=$( curl -s $purl | grep "playerAvatarAutoSizeInner" | grep -o -P '(?<=src=).*(?=><)')
-	plist+=$(echo "<tr>
-	<td><img src=$pimg width="25%"></td>
-	<td><a href="http://steamcommunity.com/profiles/$pid" target="_blank">View Profile - $pname</a></td>
-	</tr>
-	")
+		do
+		pname=$(echo "$player" | sed '/^\s*$/d' | cut -c 4- | cut -d',' -f1)
+		pid=$(echo "$player" | sed '/^\s*$/d' | cut -c 4- | cut -d',' -f2 | tr -d ' ')
+		purl="http://steamcommunity.com/profiles/$pid"
+		pimg=$( curl -s $purl | grep "playerAvatarAutoSizeInner" | grep -o -P '(?<=src=).*(?=><)')
+		plist+=$(echo "<tr>
+		<td><img src=$pimg width="25%"></td>
+		<td><a href="http://steamcommunity.com/profiles/$pid" target="_blank">View Profile - $pname</a></td>
+		</tr>
+		")
 	done <<< "$clean"
+
 	plist+=$(echo "</table>")
 	echo "$plist" > $html3
 	else
 	echo "$rconpull" > $html3
 	fi
+
+
+        if [ "$needupdate" = "yes" ]
+        then
+			echo "needupdate = yes"
+                        if [ "$updateinprogress" != "" ]
+                        then
+				echo "updateinprogress = no"
+                                if [ "$(echo "$rconpull" | grep "No Players Connected")" != "" ]
+                                then
+				echo "no players connected"
+                                message="AUTOMATED MESSAGE - No Players Connected, starting server automatic update in 15 seconds"
+                                $srcon serverchat  "$message"
+                                echo "$(date "+[%m/%d %H:%M]")$message" >>  $html4
+                                sleep 15
+				echo "stopping server"
+                                $dir/arkserver stop &
+                                echo "$(date "+[%m/%d %H:%M]")Server Stopped" >>  $html4
+                                updateinprogress=1
+                                elif  [ $pnumber -ge 1 ]
+                                then
+                                        if [ $updatetimer -gt 900 ]
+                                        then
+                                        echo "updatetimer is greater than 900"
+                                        $srcon serverchat "AUTOMATED MESSAGE - Players($pnumber) There is an update available. The server will not update while there are players in there. WHEN you wish to update the server please make sure everyone logs out."
+                                        updatetimer=0
+                                        else
+                                        updatetimer=$(expr $updatetimer + 1)
+                                        fi
+                                fi
+                        fi
+        fi
+
+
     r="$up <font face="verdana" color="green"> Server Received </font>"
     fi
     round=2
+
     ;;
 2 )
     rconpull=$($srcon getchat 2>&1)
@@ -131,6 +183,8 @@ esac
 
 
 
+
+
 #=========== WORLD SAVE DATE ===========
 wfile=$dir/serverfiles/ShooterGame/Saved/SavedArks/$worldsave
 wdiff=$(expr $(date +%s) - $(date -r $wfile +%s))
@@ -163,6 +217,9 @@ echo "Running Server/Mod Update"
 modpulldate=$(date +"%b %d %r PST")
 
  #=========== MOD UPDATES ===========
+ unset needupdate
+
+
  config="$dir/serverfiles/ShooterGame/Saved/Config/LinuxServer/GameUserSettings.ini"
  modlist=$(grep "ActiveMods" $config | sed 's/ActiveMods=//g' | sed 's/,/ /g')
 
@@ -183,6 +240,8 @@ modpulldate=$(date +"%b %d %r PST")
  if [ $(date --date "$moddate" +%s) -gt $(date --date "$ourmoddate" +%s) ]
  then
     status="$warn <font face="verdana" color="orange">UPDATE</font>"
+    needupdate="yes"
+    updatetimer=901
  else
     status="$up <font face="verdana" color="green">OK</font>"
  fi
@@ -216,8 +275,11 @@ modpulldate=$(date +"%b %d %r PST")
  if [ $devbuild -gt $ourbuild ]
  then
  build="$warn <font face="verdana" color="orange">Update Available</font>"
- else
+ needupdate="yes"
+ updatetimer=901
+else
  build="$up <font face="verdana" color="green">Up to Date</font>"
+
  fi
 
 count=1
