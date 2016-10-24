@@ -68,7 +68,7 @@ echo "update case 1"
 	then
 	echo "process stopped, starting server"
 	$dir/arkserver start >> $web/log/$logfile &
-	echo -e "\n<b>$(date "+[%m/%d %H:%M]")<font color="green">Server Started For Updates</font></b><br>" >>  $html4)
+	echo -e "\n<b>$(date "+[%m/%d %H:%M]")<font color="green">Server Started For Updates</font></b><br>" >>  $html4
 	updateinprogress=2
 	fi
 ;;
@@ -85,11 +85,11 @@ echo "update case 2"
 3 )
 	if  [ "$needupdate" = "" ]
 	then
-	echo -e "\n<b>$(date "+[%m/%d %H:%M]")<font color="green">Server Update Completed </font></b><br>" >>  $html4)
+	echo -e "\n<b>$(date "+[%m/%d %H:%M]")<font color="green">Server Update Completed </font></b><br>" >>  $html4
 	unset serverupdatemessage
 	unset updateinprogress
 	else
-	echo -e "\n<b>$(date "+[%m/%d %H:%M]")<font color="red">Server Stopped To Continue Updates</font></b><br>" >>  $html4)
+	echo -e "\n<b>$(date "+[%m/%d %H:%M]")<font color="red">Server Stopped To Continue Updates</font></b><br>" >>  $html4
 	$dir/arkserver stop >> $web/log/$logfile &
 	updateinprogress=1
 	fi
@@ -107,6 +107,7 @@ case $round in
     then
 	if [ "$(echo "$rconpull" | grep '.*,' )" != "" ]
 	then
+	steamapi="http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=$apikey&steamids="
 	clean=$(echo "$rconpull" | sed '/^\s*$/d' )
 	pnumber=$(echo "$rconpull" | sed '/^\s*$/d' | wc -l)
 	plist=$(echo "<table>")
@@ -116,7 +117,7 @@ case $round in
 		pname=$(echo "$player" | sed '/^\s*$/d' | cut -c 4- | cut -d',' -f1)
 		pid=$(echo "$player" | sed '/^\s*$/d' | cut -c 4- | cut -d',' -f2 | tr -d ' ')
 		purl="http://steamcommunity.com/profiles/$pid"
-		pimg=$( curl -s $purl | grep "playerAvatarAutoSizeInner" | grep -o -P '(?<=src=).*(?=><)')
+		pimg=$( curl -s "$steamapi$pid"  | grep -o -P '(?<=full": ).*(?=,)' )
 		plist+=$(echo "<tr>
 		<td><img src=$pimg width="25%"></td>
 		<td><a href="http://steamcommunity.com/profiles/$pid" target="_blank">View Profile - $pname</a></td>
