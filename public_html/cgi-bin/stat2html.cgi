@@ -63,11 +63,35 @@ fi
 case $updateinprogress in
 
 1 )
-echo "update case"
+echo "update case 1"
 	if [ "$(echo "$p"  | grep "Stopped")" != "" ]
 	then
-	$dir/arkserver start &
+	echo "process stopped, starting server"
+	$dir/arkserver start >> $web/log/$logfile &
+	echo -e "\n<b>$(date "+[%m/%d %H:%M]")<font color="green">Server Started For Updates</font></b><br>" >>  $html4)
 	updateinprogress=2
+	fi
+;;
+
+2 )
+echo "update case 2"
+	if [ "$(echo "$p"  | grep "Running")" != "" ]
+	then
+	unset needupdate
+	count=$maxcount
+	updateinprogress=3
+	fi
+;;
+3 )
+	if  [ "$needupdate" = "" ]
+	then
+	echo -e "\n<b>$(date "+[%m/%d %H:%M]")<font color="green">Server Update Completed </font></b><br>" >>  $html4)
+	unset serverupdatemessage
+	unset updateinprogress
+	else
+	echo -e "\n<b>$(date "+[%m/%d %H:%M]")<font color="red">Server Stopped To Continue Updates</font></b><br>" >>  $html4)
+	$dir/arkserver stop >> $web/log/$logfile &
+	updateinprogress=1
 	fi
 ;;
 esac
@@ -103,26 +127,24 @@ case $round in
 	plist+=$(echo "</table>")
 	echo "$plist" > $html3
 	else
-	echo "$rconpull" > $html3
+	echo "<center><b><font color="green">$rconpull</font></b></center>" > $html3
 	fi
 
 
         if [ "$needupdate" = "yes" ]
         then
 			echo "needupdate = yes"
-                        if [ "$updateinprogress" != "" ]
+                        if [ "$updateinprogress" = "" ]
                         then
 				echo "updateinprogress = no"
                                 if [ "$(echo "$rconpull" | grep "No Players Connected")" != "" ]
                                 then
+				logfile=$(date "+%m-%d-%Y-%H-%M")
 				echo "no players connected"
-                                message="AUTOMATED MESSAGE - No Players Connected, starting server automatic update in 15 seconds"
+                                serverupdatemessage="<center><FONT FACE="garamond"><b>AutoUpdate:<font color="green">In Progress</font></b> </FONT></center>"
+				message="AUTOMATED MESSAGE - No Players Connected, starting server automatic update in 15 seconds"
                                 $srcon serverchat  "$message"
-                                echo "$(date "+[%m/%d %H:%M]")$message" >>  $html4
-                                sleep 15
-				echo "stopping server"
-                                $dir/arkserver stop &
-                                echo "$(date "+[%m/%d %H:%M]")Server Stopped" >>  $html4
+                                (sleep 15;echo "stopping server for updates";$dir/arkserver stop >> $web/log/$logfile;echo -e "\n<b>$(date "+[%m/%d %H:%M]")<font color="red">Server Stopped For Updates</font></b><br>" >>  $html4) &
                                 updateinprogress=1
                                 elif  [ $pnumber -ge 1 ]
                                 then
@@ -264,6 +286,9 @@ modpulldate=$(date +"%b %d %r PST")
  if [ "$(echo "$output" | grep ">UPDATE<")" != "" ]
   then
     modstatus="$warn <font face="verdana" color="orange">Update Available</font>"
+    needupdate="yes"
+    updatetimer=901
+
   else
     modstatus="$up <font face="verdana" color="green">Up to Date</font>"
  fi
@@ -296,6 +321,7 @@ echo '
 <div style="border-style: groove;border-width: 5px; width: 97%">
 '$banner'
 <center><FONT FACE="garamond"><b>Pull:</b> '$(date +"%b %d %r PST")'</FONT></center>
+
 <table>
   <tr>
     <td><b>Started:</b></td>
@@ -323,6 +349,7 @@ echo '
 <h2>Update Status + Mod List</h2>
 <div style="border-left: groove;border-right: groove;border-top: groove;border-width: 5px; width: 97%">
 <center><FONT FACE="garamond"><b>Pull:</b> '$modpulldate'</FONT></center>
+'$serverupdatemessage'
 <table>
   <tr>
     <td><div class="tooltip"><a href="https://steamdb.info/app/376030/depots/?branch=public" target="_blank">Server Build:&nbsp;<span class="tooltiptext">DevBuild:'$devbuild'<br>OurBuild:'$ourbuild'</span></a></div></td>
