@@ -59,7 +59,7 @@ p="$down <font face="verdana" color="red"> Stopped </font>"
 fi
 
 
-
+#===========  Server Update In Progress ===========
 case $updateinprogress in
 
 1 )
@@ -68,7 +68,7 @@ echo "update case 1"
 	then
 	echo "process stopped, starting server"
 	$dir/arkserver start >> $web/log/$logfile &
-	echo -e "\n<b>$(date "+[%m/%d %H:%M]")<font color="green">Server Started For Updates</font></b><br>" >>  $html4
+	echo -e "\n<b>$(date "+[%m/%d %H:%M]")<font color="orange">Server Started For Updates</font></b><br>" >>  $html4
 	updateinprogress=2
 	fi
 ;;
@@ -85,9 +85,13 @@ echo "update case 2"
 3 )
 	if  [ "$needupdate" = "" ]
 	then
-	echo -e "\n<b>$(date "+[%m/%d %H:%M]")<font color="green">Server Update Completed </font></b><br>" >>  $html4
-	unset serverupdatemessage
-	unset updateinprogress
+		if [ "$(echo "$r" | grep "Server Received" )" != "" ]
+		then
+		echo -e "\n<b>$(date "+[%m/%d %H:%M]")<font color="green">Server Update Completed</font></b><br>" >>  $html4
+		unset serverupdatemessage
+		unset updateinprogress
+		unset updatetimer
+		fi
 	else
 	echo -e "\n<b>$(date "+[%m/%d %H:%M]")<font color="red">Server Stopped To Continue Updates</font></b><br>" >>  $html4
 	$dir/arkserver stop >> $web/log/$logfile &
@@ -149,7 +153,12 @@ case $round in
                                 updateinprogress=1
                                 elif  [ $pnumber -ge 1 ]
                                 then
-                                        if [ $updatetimer -gt 900 ]
+					if [ "$updatetimer" = "" ]
+					then
+					echo "updatetimer is blank"
+					$srcon serverchat "AUTOMATED MESSAGE - Players($pnumber) There is an update available. The server will not update while there are players in there. WHEN you wish to update the server please make sure everyone logs out."
+					updatetimer=0
+                                        elif [ $updatetimer -gt 900 ]
                                         then
                                         echo "updatetimer is greater than 900"
                                         $srcon serverchat "AUTOMATED MESSAGE - Players($pnumber) There is an update available. The server will not update while there are players in there. WHEN you wish to update the server please make sure everyone logs out."
