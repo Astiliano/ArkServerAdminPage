@@ -269,13 +269,14 @@ modpulldate=$(date +"%b %d %r PST")
     moddate=$(echo "$tmppull"| grep "detailsStatRight" | grep "@" | tail -1 | sed 's/<div class="detailsStatRight">//g' | sed 's/<\/div>//g' | sed 's/@//g')
     ourmoddate=$(date -r $moddir/$mod)
 
- if [ $(date --date "$moddate" +%s) -gt $(date --date "$ourmoddate" +%s) ]
+ if [ "$( echo "$tmppull" | grep "<title>Steam Community :: Error</title>" )" != "" ] || [ "$(echo "$tmppull" | grep "Could not resolve host:" )" != "" ]
  then
-    status="$warn <font face="verdana" color="orange">UPDATE</font>"
-    needupdate="yes"
-    updatetimer=901
+   status="$down <font face="verdana" color="red">ERROR</font>"
+ elif [ $(date --date "$moddate" +%s) -gt $(date --date "$ourmoddate" +%s) ]
+  then
+  status="$warn <font face="verdana" color="orange">UPDATE</font>"
  else
-    status="$up <font face="verdana" color="green">OK</font>"
+  status="$up <font face="verdana" color="green">OK</font>"
  fi
 
     echo "
@@ -295,12 +296,20 @@ modpulldate=$(date +"%b %d %r PST")
 
  if [ "$(echo "$output" | grep ">UPDATE<")" != "" ]
   then
-    modstatus="$warn <font face="verdana" color="orange">Update Available</font>"
-    needupdate="yes"
-    updatetimer=901
-
-  else
+    if [ $modpass -gt 3 ]
+      then
+       modstatus="$warn <font face="verdana" color="orange">Update Available</font>"
+       needupdate="yes"
+       updatetimer=901
+      else
+       modpass=$(expr $modpass + 1 )
+    fi
+ elif [ "$(echo "$output" | grep ">ERROR<")" != "" ]
+ then
+    modstatus="$down <font face="verdana" color="red">ERROR</font>"
+ else
     modstatus="$up <font face="verdana" color="green">Up to Date</font>"
+    modpass=0
  fi
 
  #=========== SERVER UPDATES ===========
@@ -312,7 +321,7 @@ modpulldate=$(date +"%b %d %r PST")
  build="$warn <font face="verdana" color="orange">Update Available</font>"
  needupdate="yes"
  updatetimer=901
-else
+ else
  build="$up <font face="verdana" color="green">Up to Date</font>"
 
  fi
