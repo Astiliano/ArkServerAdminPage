@@ -30,7 +30,7 @@ for mod in $modlist; do
  lastmodupdate=$(date -r "$moddir/$latest" +"%b %d %r")
  lastserverupdate=$(date -r "$dir/serverfiles/steamapps/appmanifest_376030.acf" +"%b %d %r")
 done
-
+echo "latest $latest"
 while :
 do
 
@@ -397,14 +397,15 @@ echo '
   <tr>
     <td><div class="tooltip"><a href="https://steamdb.info/app/376030/depots/?branch=public" target="_blank">Server Build:&nbsp;<span class="tooltiptext">DevBuild:'$devbuild'<br>OurBuild:'$ourbuild'</span></a></div></td>
     <td>'$build'</td>
-    <td><b>Updated:</b></td>
-    <td><font face="verdana">'$lastserverupdate'</font></td>
+    <td><b>Updated:<b></td>
+    <td><a href="https://survivetheark.com/index.php?/forums/topic/8982-pc-patch-notes-current-v2485-upcoming-v249-eta-october-27/" target="_blank"><font face="verdana">'$lastserverupdate'</font></a></td>
+
   </tr>
   <tr>
     <td><b>Server Mods:&nbsp;</b></td>
     <td>'"$modstatus"'</td>
     <td><b>Updated:<b></td>
-    <td><font face="verdana">'$lastmodupdate'</font></td>
+    <td><a href="https://steamcommunity.com/sharedfiles/filedetails/?id='$(echo "$latest")'" target="_blank"><font face="verdana">'$lastmodupdate'</font></a></td>
   </tr>
 </table>
 </div>
