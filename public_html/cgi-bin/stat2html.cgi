@@ -19,6 +19,18 @@ sleep=4
 round=1
 
 
+
+config="$dir/serverfiles/ShooterGame/Saved/Config/LinuxServer/GameUserSettings.ini"
+modlist=$(grep "ActiveMods" $config | sed 's/ActiveMods=//g' | sed 's/,/ /g')
+moddir="$dir/serverfiles/Engine/Binaries/ThirdParty/SteamCMD/Linux/steamapps/workshop/content/346110"
+
+unset -v latest
+for mod in $modlist; do
+  if [ "$(date -r "$moddir/$mod" "+%s")" -gt "$(date -r "$moddir/$latest" "+%s")" ] ; then latest=$mod;fi
+ lastmodupdate=$(date -r "$moddir/$latest" +"%b %d %r")
+ lastserverupdate=$(date -r "$dir/serverfiles/steamapps/appmanifest_376030.acf" +"%b %d %r")
+done
+
 while :
 do
 
@@ -91,6 +103,16 @@ echo "update case 2"
 		unset serverupdatemessage
 		unset updateinprogress
 		unset updatetimer
+
+                 modlist=$(grep "ActiveMods" $config | sed 's/ActiveMods=//g' | sed 's/,/ /g')
+                 moddir="$dir/serverfiles/Engine/Binaries/ThirdParty/SteamCMD/Linux/steamapps/workshop/content/346110"
+                 unset -v latest
+                 for mod in $modlist; do
+                  echo "$mod"
+                   if [ "$(date -r "$moddir/$mod" "+%s")" -gt "$(date -r "$moddir/$latest" "+%s")" ] ; then latest=$mod;fi
+                   lastmodupdate=$(date -r "$moddir/$latest" +"%b %d %r")
+		   lastserverupdate=$(date -r "$dir/serverfiles/steamapps/appmanifest_376030.acf" +"%b %d %r")
+                 done
 		fi
 	else
 	echo -e "\n<b>$(date "+[%m/%d %H:%M]")<font color="red">Server Stopped To Continue Updates</font></b><br>" >>  $html4
@@ -245,7 +267,7 @@ fi
 
 if [ $count -gt $maxcount ]
 then
-echo "Running Server/Mod Update"
+echo "Running Server/Mod Update ModDir: $moddir"
 modpulldate=$(date +"%b %d %r PST")
 
  #=========== MOD UPDATES ===========
@@ -369,13 +391,18 @@ echo '
 <div style="border-left: groove;border-right: groove;border-top: groove;border-width: 5px; width: 97%">
 <center><FONT FACE="garamond"><b>Pull:</b> '$modpulldate'</FONT></center>
 '$serverupdatemessage'
-<table>
+<table cellpadding="3">
   <tr>
     <td><div class="tooltip"><a href="https://steamdb.info/app/376030/depots/?branch=public" target="_blank">Server Build:&nbsp;<span class="tooltiptext">DevBuild:'$devbuild'<br>OurBuild:'$ourbuild'</span></a></div></td>
     <td>'$build'</td>
-    <td>&nbsp;&nbsp;
+    <td><b>Updated:</b></td>
+    <td><font face="verdana">'$lastserverupdate'</font></td>
+  </tr>
+  <tr>
     <td><b>Server Mods:&nbsp;</b></td>
     <td>'"$modstatus"'</td>
+    <td><b>Updated:<b></td>
+    <td><font face="verdana">'$lastmodupdate'</font></td>
   </tr>
 </table>
 </div>
