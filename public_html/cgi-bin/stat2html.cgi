@@ -359,6 +359,8 @@ fi
 #===========  FINAL OUTPUT ===========
 
 echo '
+<h2>Monitoring</h2>
+<br>
 <div style="border-style: groove;border-width: 5px; width: 97%">
 '$banner'
 <center><FONT FACE="garamond"><b>Pull:</b> '$(date +"%b %d %r PST")'</FONT></center>
@@ -387,8 +389,8 @@ echo '
 </table>
 </div>
 
-<h2>Update Status + Mod List</h2>
-<div style="border-left: groove;border-right: groove;border-top: groove;border-width: 5px; width: 97%">
+<h2>Update Status</h2>
+<div style="border-style: groove;border-width: 5px; width: 97%">
 <center><FONT FACE="garamond"><b>Pull:</b> '$modpulldate'</FONT></center>
 '$serverupdatemessage'
 <table cellpadding="3">
@@ -406,6 +408,17 @@ echo '
   </tr>
 </table>
 </div>
+
+<h2>Mod List</h2>
+<div style="border-style: groove;border-width: 5px; width: 97%">
+<table id="modtable">
+ <th>Status</th>
+ <th>ID</th>
+ <th>Name</th>
+'"$output"'
+</table>
+</div>
+
 ' > $html
 
 echo '
