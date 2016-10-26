@@ -409,7 +409,7 @@ echo '
 </table>
 </div>
 
-<h2>Mod List</h2>
+<h2>Mod List ('$(echo "$modlist" | wc -w)')</h2>
 <div style="border-style: groove;border-width: 5px; width: 97%">
 <table id="modtable">
 '"$output"'
