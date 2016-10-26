@@ -412,9 +412,6 @@ echo '
 <h2>Mod List</h2>
 <div style="border-style: groove;border-width: 5px; width: 97%">
 <table id="modtable">
- <th>Status</th>
- <th>ID</th>
- <th>Name</th>
 '"$output"'
 </table>
 </div>
