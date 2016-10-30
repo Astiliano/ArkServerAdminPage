@@ -234,12 +234,12 @@ esac
     if [ "$(echo "$rconpull" | grep "Connection refused")" != "" ]
     then
     r="$down <font face="verdana" color="red"> Connection Refused </font>"
-    elif [ "$(echo "$rconpull" | grep "Couldn't Authenticate")" != "" ]
-    then
-    r="$warn <font face="verdana" color="Orange"> Couldn't Authenticate </font>"
     elif [ "$(echo "$rconpull" | grep "Password Refused")" != "" ]
     then
     r="$warn <font face="verdana" color="Orange"> Password Refused </font>"
+    elif [ "$(echo "$rconpull" | grep "Couldn't Authenticate")" != "" ]
+    then
+    r="$warn <font face="verdana" color="Orange"> Couldn't Authenticate </font>"
     fi
 
 
