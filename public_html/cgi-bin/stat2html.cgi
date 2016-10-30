@@ -24,15 +24,23 @@ config="$dir/serverfiles/ShooterGame/Saved/Config/LinuxServer/GameUserSettings.i
 modlist=$(grep "ActiveMods" $config | sed 's/ActiveMods=//g' | sed 's/,/ /g')
 moddir="$dir/serverfiles/Engine/Binaries/ThirdParty/SteamCMD/Linux/steamapps/workshop/content/346110"
 
-unset -v latest
-for mod in $modlist; do
-  if [ "$(date -r "$moddir/$mod" "+%s")" -gt "$(date -r "$moddir/$latest" "+%s")" ] ; then latest=$mod;fi
- lastmodupdate=$(date -r "$moddir/$latest" +"%b %d %r")
- lastserverupdate=$(date -r "$dir/serverfiles/steamapps/appmanifest_376030.acf" +"%b %d %r")
-done
-echo "latest $latest"
+if [ "$(echo "$modlist")" != "" ]
+then
+ unset -v latest
+ for mod in $modlist; do
+   if [ "$(date -r "$moddir/$mod" "+%s")" -gt "$(date -r "$moddir/$latest" "+%s")" ] ; then latest=$mod;fi
+  lastmodupdate=$(date -r "$moddir/$latest" +"%b %d %r")
+ done
+ echo "latest $latest"
+fi
+
+
+lastserverupdate=$(date -r "$dir/serverfiles/steamapps/appmanifest_376030.acf" +"%b %d %r")
+
 while :
 do
+
+
 
 #=========== SERVER PROCESS ===========
 process="./ShooterGameServer"
@@ -314,26 +322,30 @@ modpulldate=$(date +"%b %d %r PST")
 
  export -f modpull
 
- output=$(parallel -k "modpull" ::: $modlist)
-
- if [ "$(echo "$output" | grep ">UPDATE<")" != "" ]
+ if [ "$(echo "$modlist")" != "" ]
   then
-    if [ $modpass -ge 3 ]
-      then
-       modstatus="$warn <font face="verdana" color="orange">Update Available</font>"
-       needupdate="yes"
-       updatetimer=901
-      else
-       modpass=$(expr $modpass + 1 )
-    fi
- elif [ "$(echo "$output" | grep ">ERROR<")" != "" ]
- then
-    modstatus="$down <font face="verdana" color="red">ERROR</font>"
- else
-    modstatus="$up <font face="verdana" color="green">Up to Date</font>"
-    modpass=0
- fi
+  output=$(parallel -k "modpull" ::: $modlist)
 
+  if [ "$(echo "$output" | grep ">UPDATE<")" != "" ]
+   then
+     if [ $modpass -ge 3 ]
+       then
+        modstatus="$warn <font face="verdana" color="orange">Update Available</font>"
+        needupdate="yes"
+        updatetimer=901
+       else
+        modpass=$(expr $modpass + 1 )
+     fi
+  elif [ "$(echo "$output" | grep ">ERROR<")" != "" ]
+  then
+     modstatus="$down <font face="verdana" color="red">ERROR</font>"
+  else
+     modstatus="$up <font face="verdana" color="green">Up to Date</font>"
+     modpass=0
+  fi
+ else
+ modstatus="$down <font face="verdana">No Mods</font>"
+ fi
  #=========== SERVER UPDATES ===========
  devbuild=$(curl -s https://steamdb.info/app/376030/depots/?branch=public | grep "app-json" | cut -c45-51)
  ourbuild=$(grep -i "buildid" $dir/serverfiles/steamapps/appmanifest_376030.acf | awk '{print $2}' | sed 's/"//g')
