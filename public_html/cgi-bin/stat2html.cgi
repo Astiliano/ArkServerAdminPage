@@ -328,7 +328,7 @@ modpulldate=$(date +"%b %d %r PST")
 
   if [ "$(echo "$output" | grep ">UPDATE<")" != "" ]
    then
-     if [ $modpass -ge 3 ]
+     if [ $( expr $modpass + 0 ) -ge 3 ]
        then
         modstatus="$warn <font face="verdana" color="orange">Update Available</font>"
         needupdate="yes"
