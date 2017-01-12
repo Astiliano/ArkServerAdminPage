@@ -1,5 +1,5 @@
 # ArkServerAdminPage
-Special thanks to Ronald Pedid (ronaldpedid@live.com) for doing all the hard CSS formatting!
+Special thanks to Ronald Pedid (ronaldpedid@live.com) for helping with CSS
 
 Simple site to manage self-hosted Linux Ark Servers
 
