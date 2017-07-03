@@ -1,4 +1,3 @@
-
 <html>
 <head>
     <link rel="stylesheet" type="text/css" href="css/reddit.css">
@@ -28,7 +27,6 @@
         function startRefresh() {
             setTimeout(startRefresh,4000);
 	    getchat();
-	    getmodlist();
 	    getplayerlist();
 	    getstatus();
         }
@@ -42,17 +40,16 @@
         var elem = document.getElementById('chat');
          var elemtop = elem.scrollTop;
          var elemheight = elem.scrollHeight - elem.clientHeight
-          if ( elemtop == elemheight ) {
+          if ( elemtop >= elemheight ) {
           $('#chat').load('chat.html');
-          setTimeout(setchatscroll,500)
+          setTimeout(setchatscroll,1500);
           } else {
           $('#chat').load('chat.html');
           }
+	// If auto bottom stops working
+	// document.getElementById("board").innerHTML = "top" + elemtop + "height" + elemheight;
         }
 
-	function getmodlist() {
-	$('#modlist').load('modlist.html');
-	}
 
 	function getplayerlist() {
 	$('#playerlist').load('playerlist.html');
@@ -122,13 +119,23 @@ function setchatscrolltest() {
 
 <div class="wrapper">
     <div class="right">
-	<h2>Real-Time Monitoring</h2>
-	<br>
         <div id="status"></div>
-	<div style="border-left: groove;border-right: groove;border-bottom: groove;border-width: 5px; width: 97%;">
-	<button onclick="toggle_visibility('modlist');">Show Mods</button>
-	<div id="modlist" style="display:none;"></div>
-	</div>
+
+     </div>
+        
+
+	<div class="right"  id="config">
+        <h2>Admin News Board</h2>
+	<br>
+        <div id="board" style="border-style: groove;border-width: 5px; width: 97%">
+        <center><p>Don't update this server, I need it for update testing</p></center>
+        </div>
+        <h2>Player List</h2>
+	<div id="playerlist" style="border-style: groove;border-width: 5px; width: 97%;overflow-x: hidden; max-height: 200px;">
+</div>
+        <h2>Server Chat</h2>
+	<div style="text-align: right; margin-top: -20px; padding: 0px 10px;"><a href="javascript:setchatscroll()">Back to bottom</a></div>
+        <div id="chat" style="border-style: groove;border-width: 5px; width: 97%;overflow-x: hidden; height: 200px;"></div>
 
         <h2>Server Administration</h2>
 <div style="border-style: groove;border-width: 5px; width: 97%">
@@ -142,31 +149,16 @@ function setchatscrolltest() {
             </select>
             <div class="select__arrow"></div>
             <i>After you submit, please allow a few <b>minutes</b> for the server to process the request <br></i>
-            <input type="submit"  value="Submit" /> 
+            <input type="submit"  value="Submit" />
         </form>
 
 
         <div id="response" style="display: none;"></div>
         <div id="message" style="display: none;"><center> <img src="images/loader.gif" style="width: 50%;height: 25%"/></center> </div>
 </div>
-     </div>
-        
 
 
 
-	<div class="right"  id="config">
-        <h2>Admin News Board</h2>
-	<br>
-        <div style="border-style: groove;border-width: 5px; width: 97%">
-        WIP
-        </div>
-        <h2>Player List</h2>
-	<div id="playerlist" style="border-style: groove;border-width: 5px; width: 97%;overflow-x: hidden; max-height: 200px;">
-</div>
-        <h2>Server Chat</h2>
-	<div style="text-align: right; margin-top: -20px; padding: 0px 10px;"><a href="javascript:setchatscroll()">Back to bottom</a></div>
-        <div id="chat" style="border-style: groove;border-width: 5px; width: 97%;overflow-x: hidden; height: 200px;">
-</div>
 	</div>
 
 
