@@ -347,7 +347,7 @@ modpulldate=$(date +"%b %d %r PST")
  modstatus="$down <font face="verdana">No Mods</font>"
  fi
  #=========== SERVER UPDATES ===========
- devbuild=$(curl -s https://steamdb.info/app/376030/depots/?branch=public | grep "app-json" | cut -c45-51)
+ devbuild=$(curl -s https://steamdb.info/app/376030/depots/?branch=public | grep -m1 "app-json" | cut -c45-51)
  ourbuild=$(grep -i "buildid" $dir/serverfiles/steamapps/appmanifest_376030.acf | awk '{print $2}' | sed 's/"//g')
 
  if [ $devbuild -gt $ourbuild ]
